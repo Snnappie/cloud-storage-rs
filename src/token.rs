@@ -65,7 +65,12 @@ impl Token {
         let private_key = PKey::from_rsa(rsa).unwrap();
         let private_key = &private_key.private_key_to_der().unwrap();
         // let private_key = include_bytes!("../../private_key2.der");
-        let jwt = jsonwebtoken::encode(&header, &claims, private_key).unwrap();
+        let jwt = jsonwebtoken::encode(
+            &header,
+            &claims,
+            &jsonwebtoken::EncodingKey::from_secret(&private_key),
+        )
+        .unwrap();
         let body = [
             ("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer"),
             ("assertion", &jwt),
